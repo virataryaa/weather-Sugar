@@ -801,6 +801,21 @@ with st.sidebar:
     st.markdown(f"<p style='font-size:.75rem;color:{INK_4};margin-top:.8rem'>"
                 f"Today: {today.strftime('%Y-%m-%d')}</p>", unsafe_allow_html=True)
 
+    # Last data update — newest mtime across all parquet files
+    _mtimes = [
+        Path(PARQUET_DIR / f).stat().st_mtime
+        for f in FILE_MAP.values()
+        if (PARQUET_DIR / f).exists()
+    ]
+    if _mtimes:
+        import datetime as _dt
+        _last = _dt.datetime.fromtimestamp(max(_mtimes))
+        st.markdown(
+            f"<p style='font-size:.75rem;color:{INK_4};margin-top:.2rem'>"
+            f"Last update: {_last.strftime('%Y-%m-%d %H:%M')}</p>",
+            unsafe_allow_html=True,
+        )
+
 # ---------- TABS ----------
 tab_brazil, tab_india, tab_thailand = st.tabs(["Brazil", "India", "Thailand"])
 
